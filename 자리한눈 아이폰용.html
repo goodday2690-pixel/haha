@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+  <meta name="theme-color" content="#f4f7fb">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="자리한눈">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="자리한눈">
+  <meta name="description" content="은행 대기번호와 좌석·자리비움 현황을 직관적으로 관리하는 앱">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
+  <link rel="icon" href="./icons/icon-192.png" type="image/png" sizes="192x192">
+  <title>자리한눈 - 아이폰·안드로이드 은행 좌석 관리</title>
+  <style>
+    :root{--ink:#18263f;--muted:#78879a;--brand:#326fce;--brand-dark:#2457a6;--paper:#fff;--line:#dde5f0;--canvas:#f7f9fc;--green:#0e9276;--amber:#b77920;--red:#c94e57;--shadow:0 10px 30px rgba(31,58,98,.06)}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;color:var(--ink);background:#f2f5fa}button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible{outline:3px solid #9ec3ff;outline-offset:2px}
+    .app{min-height:100vh}.topbar{background:#fff;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:19px 30px;border-bottom:1px solid #e7edf5}.brand{display:flex;align-items:center;gap:13px}.logo{width:44px;height:44px;border-radius:13px;background:linear-gradient(145deg,#377ce0,#274fa7);display:grid;place-items:center;color:#fff;box-shadow:0 5px 13px #306bd441}.brand-title{font-weight:840;font-size:21px;letter-spacing:-.8px}.brand-sub{font-size:12px;color:#8895a9;line-height:1.4;margin-top:2px}.top-right{display:flex;align-items:center;gap:12px}.offline{font-size:12px;color:#48826c;display:flex;align-items:center;gap:7px;background:#ecf8f2;padding:8px 12px;border-radius:30px}.offline:before{content:"";width:7px;height:7px;border-radius:50%;background:#2da777}.clock{font-variant-numeric:tabular-nums;font-weight:700;color:#61728a;font-size:13px}
+    .page{padding:26px 28px 32px;max-width:1690px;margin:auto}.headline{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}.headline h1{margin:0;font-size:22px;font-weight:820;letter-spacing:-.7px}.headline p{margin:5px 0 0;font-size:13px;color:var(--muted)}.stats{display:flex;gap:10px}.stat{background:white;border:1px solid var(--line);border-radius:12px;min-width:94px;text-align:center;padding:10px 13px;box-shadow:var(--shadow)}.stat strong{font-size:22px;font-variant-numeric:tabular-nums}.stat span{display:block;color:#8391a3;font-size:11px;margin-top:2px}
+    .content{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:18px;align-items:start}.left-col{min-width:0}.toolbar{background:#fff;border:1px solid var(--line);border-radius:15px;padding:13px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:13px;box-shadow:var(--shadow)}.toolbar-group{display:flex;align-items:center;gap:8px}.toolbar-title{font-size:12px;font-weight:740;color:#74839a;white-space:nowrap}.number-field{width:56px;text-align:center;border:1px solid #d6e1ee;border-radius:9px;padding:9px 4px;background:#f9fbfd;font-weight:720;color:var(--ink)}.by{color:#92a0b3;font-weight:700}.separator{height:28px;width:1px;background:#e0e6ee;margin:0 2px}.btn{border:1px solid var(--line);color:#3d5370;background:#fff;border-radius:9px;padding:9px 11px;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-size:12px;font-weight:740;min-height:36px;white-space:nowrap;transition:background .15s,transform .15s}.btn:hover{background:#f3f7fd}.btn:active{transform:translateY(1px)}.btn-primary{background:var(--brand);border-color:var(--brand);color:white}.btn-primary:hover{background:var(--brand-dark)}.btn-warn{background:#fff7f7;color:#b5555b;border-color:#f1dedf}.btn-icon{width:36px;padding:8px}.btn svg{width:16px;height:16px;flex:none}.zoom-control{margin-left:auto;display:flex;align-items:center;gap:4px}.zoom-readout{font-size:12px;color:#6b7c94;font-weight:800;min-width:42px;text-align:center}
+    .board-shell{border-radius:15px;border:1px solid var(--line);background:#fff;overflow:hidden;box-shadow:var(--shadow)}.board-caption{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 16px;border-bottom:1px solid #e9eef6}.board-caption strong{font-size:13px}.board-caption small{font-size:11px;color:#8190a2}.legend{display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:11px;color:#71819b}.legend-item{display:flex;align-items:center;gap:5px}.dot{width:9px;height:9px;border-radius:3px;display:inline-block;background:#ecf0f6;border:1px solid #cbd7e7}.dot.occupied{background:#4589e1;border-color:#4589e1}.dot.away{background:#f4bb56;border-color:#f4bb56}
+    .board-scroll{overflow:auto;max-height:760px;padding:20px;background:repeating-linear-gradient(0deg,transparent,transparent 23px,#e7ecf36e 24px),repeating-linear-gradient(90deg,transparent,transparent 23px,#e7ecf36e 24px),#f8fafd;touch-action:pan-x pan-y;scrollbar-color:#bac9dd transparent}.board-scale-outer{margin:auto;position:relative}.plan-board{width:920px;height:670px;border:2px solid #cfdbeb;background:#fff;border-radius:13px;position:absolute;left:0;top:0;overflow:hidden;transform-origin:top left;background-image:linear-gradient(#f3f6fa 1px,transparent 1px),linear-gradient(90deg,#f3f6fa 1px,transparent 1px);background-size:40px 40px;user-select:none}.plan-board:after{content:'출입구';position:absolute;bottom:-1px;left:27px;padding:8px 16px 0;font-size:12px;color:#9aabc0;background:#fff;border-radius:10px 10px 0 0;border:2px solid #d9e3ef;border-bottom:0;pointer-events:none}
+    .seat-zone{position:absolute;top:207px;left:90px;width:740px;height:425px;display:grid;gap:12px;z-index:2}.seat{min-width:0;min-height:0;border:2px solid #cad7e7;background:#f4f7fc;border-radius:11px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;color:#8192a7;position:relative;box-shadow:0 2px 0 rgba(36,64,97,.035);transition:background .15s,border-color .15s}.seat:hover{background:#eaf2fd;border-color:#83b2ef}.seat .seat-no{font-size:12px;font-weight:700;opacity:.9}.seat .customer-no{font-size:23px;font-weight:850;color:#fff}.seat.is-occupied{background:#4685d8;border-color:#336ebf;color:#eaf4ff;box-shadow:0 3px 0 #cfe1f6}.seat.is-occupied:hover{background:#3878ce}.seat.is-occupied .seat-no{opacity:.8}.seat.is-highlighted{outline:4px solid #f2b34b;outline-offset:3px}.seat.compact{gap:0}.seat.compact .seat-no{font-size:10px}.seat.compact .customer-no{font-size:15px}.seat.micro .seat-no{font-size:9px}.seat.micro .customer-no{font-size:13px}
+    .facility{position:absolute;z-index:3;display:flex;align-items:center;justify-content:center;padding:10px;background:#e4edf9;color:#466587;border:2px dashed #9cb7d6;border-radius:12px;font-size:19px;font-weight:800;text-align:center;white-space:pre-wrap;overflow:visible;cursor:grab;touch-action:none}.facility.circle{border-radius:999px;background:#e9e9fd;border-color:#aaa7e4;color:#6667aa}.facility.is-selected{outline:3px solid #4d88da;outline-offset:3px;border-style:solid}.facility:active{cursor:grabbing}.facility-label{overflow:hidden;pointer-events:none;max-width:100%;max-height:100%;overflow-wrap:anywhere}.resize-handle{display:none;position:absolute;bottom:-12px;right:-12px;background:#327ad4;border:3px solid #fff;box-shadow:0 2px 8px #315b9760;width:27px;height:27px;border-radius:8px;cursor:nwse-resize;touch-action:none}.facility.is-selected .resize-handle{display:block}.empty-note{position:absolute;bottom:19px;right:23px;font-size:11px;color:#bcc8d8;pointer-events:none}
+    .seat-popover{position:absolute;z-index:30;width:262px;background:#fff;border:1px solid #ced8e7;border-radius:13px;box-shadow:0 14px 40px rgba(15,41,80,.23);padding:12px;display:none}.seat-popover.open{display:block}.pop-heading{display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:800;margin-bottom:9px}.pop-heading small{font-size:12px;color:#8794a9;font-weight:650}.pop-option{display:flex;justify-content:space-between;align-items:center;width:100%;background:#fff;border:0;border-radius:9px;padding:10px 9px;text-align:left;font-size:13px;color:#344b6a;font-weight:730}.pop-option:hover{background:#f1f6fc}.pop-option:disabled{opacity:.35;cursor:default}.pop-option .tag{font-size:11px;font-weight:740;color:#8696ad}.pop-option.complete{color:#b45e60}.pop-input-row{display:flex;gap:7px}.pop-input{flex:1;min-width:0;padding:11px;border:1px solid #ccdaeb;border-radius:8px;font-size:16px}.pop-back{background:transparent;border:0;font-size:12px;color:#667b9b;margin-top:9px;padding:3px}
+    .sidebar{display:flex;flex-direction:column;gap:15px}.list-card{background:#fff;border:1px solid var(--line);border-radius:15px;overflow:hidden;box-shadow:var(--shadow)}.list-card-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:17px 17px 13px}.list-card-head strong{display:flex;align-items:center;gap:7px;font-size:15px}.list-card-head small{border-radius:9px;padding:5px 9px;background:#ebf2fb;color:#356da9;font-size:11px;font-weight:820}.list-card.away .list-card-head small{background:#fff2df;color:#a86c1d}.list-card-body{padding:1px 12px 12px;max-height:270px;overflow:auto;min-height:138px}.empty-list{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;text-align:center;padding:28px 14px;color:#a1aec0;font-size:12px}.empty-list .empty-symbol{width:35px;height:35px;border-radius:50%;display:grid;place-items:center;background:#f1f5fa;font-size:18px}.customer-row{width:100%;border:1px solid transparent;background:#fff;display:flex;align-items:center;gap:10px;padding:10px 6px;border-radius:10px;text-align:left}.customer-row:hover{background:#f3f7fe;border-color:#e8eef6}.customer-badge{border-radius:8px;background:#e7f0ff;color:#3575cb;font-size:15px;font-weight:900;min-width:54px;text-align:center;padding:8px 5px}.away .customer-badge{background:#fff2dc;color:#b47b28}.customer-meta{flex:1;min-width:0}.customer-meta b{display:block;font-size:12px}.customer-meta span{display:block;font-size:11px;color:#8b9aad;margin-top:3px}.row-chevron{color:#b2bfd0;font-size:19px}
+    .card-foot{padding:11px 15px 14px;border-top:1px solid #edf1f6}.wide-btn{width:100%}.tip-card{padding:17px;border:1px solid #dce7f8;background:#edf4fe;border-radius:15px}.tip-card strong{display:block;font-size:13px;color:#3b608e;margin-bottom:8px}.tip-card p{font-size:12px;line-height:1.85;color:#617e9f;margin:0}.tip-card b{color:#3c618f}.action-card{padding:15px;border:1px solid var(--line);background:#fff;border-radius:15px;display:flex;gap:8px}.action-card .btn{flex:1}
+    .modal-root{display:none;position:fixed;inset:0;z-index:100;background:#0d1c3491;align-items:center;justify-content:center;padding:18px}.modal-root.open{display:flex}.dialog{background:#fff;border-radius:20px;padding:23px;box-shadow:0 22px 65px rgba(0,10,29,.24);width:min(400px,100%)}.dialog .eyebrow{font-size:11px;color:#3875c5;font-weight:850;letter-spacing:.08em;margin-bottom:8px}.dialog h2{font-size:20px;letter-spacing:-.5px;margin:0 0 9px}.dialog p{font-size:13px;color:#77869d;line-height:1.65;margin:0 0 18px}.dialog label{display:block;font-size:12px;font-weight:800;color:#566985;margin-bottom:7px}.dialog input{width:100%;padding:13px 14px;border-radius:11px;border:1px solid #cbd9eb;background:#f9fbfe;font-size:18px;color:#1f324b;outline-offset:1px}.dialog input:focus{border-color:#4e93e9}.dialog .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}.dialog .modal-actions button{min-width:74px}.dialog-error{font-size:12px;color:#bd505d;min-height:18px;margin-top:7px}.toast{position:fixed;z-index:150;bottom:26px;left:50%;transform:translate(-50%,18px);pointer-events:none;background:#1e3553;color:#fff;font-size:13px;padding:11px 17px;border-radius:11px;opacity:0;transition:.18s;box-shadow:0 10px 24px #17355335}.toast.show{opacity:1;transform:translate(-50%,0)}
+    @media(max-width:1170px){.content{grid-template-columns:minmax(0,1fr)}.sidebar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.tip-card,.action-card{grid-column:span 2}.list-card-body{max-height:230px}.board-scroll{max-height:660px}}@media(max-width:650px){.topbar{padding:13px 17px}.logo{height:38px;width:38px}.brand-title{font-size:18px}.brand-sub{font-size:11px}.offline{display:none}.clock{font-size:12px}.page{padding:18px 12px 22px}.headline{align-items:flex-start}.headline h1{font-size:19px}.headline p{font-size:11px}.stats{gap:5px}.stat{min-width:58px;padding:7px}.stat strong{font-size:17px}.stat span{font-size:10px}.toolbar{padding:10px;gap:7px}.separator{display:none}.toolbar-title{font-size:11px}.btn{padding:8px;font-size:11px;min-height:34px}.number-field{width:43px;padding:8px 2px}.zoom-control{margin-left:0}.board-scroll{padding:10px;max-height:570px}.board-caption{align-items:flex-start;flex-direction:column;gap:8px}.sidebar{gap:10px}.list-card-head{padding:14px 10px}.list-card-head strong{font-size:13px}.list-card-body{padding:0 8px 10px}.tip-card{padding:14px}.action-card{padding:10px}}
+
+    /* v2: touch-first smartphone workflow and two-pane tablet workflow */
+    .mobile-tabs,.mobile-quick-card{display:none}
+    .quick-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .quick-head h2{font-size:18px;letter-spacing:-.5px;margin:0}
+    .quick-head p{font-size:12px;color:#7d8da1;margin:6px 0 0;line-height:1.5}
+    .quick-summary{display:flex;align-items:center;gap:15px;font-size:12px;color:#71819a;margin:16px 0 10px}
+    .quick-summary span{display:inline-flex;align-items:center;gap:6px}
+    .quick-summary span:last-child{margin-left:auto}
+    .quick-grid-scroll{overflow-x:auto;overscroll-behavior-x:contain;padding:2px 2px 10px}
+    .quick-grid{display:grid;gap:9px;min-width:100%}
+    .quick-seat{appearance:none;background:#f5f8fc;border:2px solid #d8e2ef;border-radius:14px;min-height:68px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#637994;touch-action:manipulation}
+    .quick-seat .quick-seat-label{font-size:11px;font-weight:750;letter-spacing:.02em}
+    .quick-seat .quick-seat-number{font-size:21px;font-weight:850;color:#9aa9b8}
+    .quick-seat.is-occupied{background:#367bd4;border-color:#367bd4;color:white;box-shadow:0 3px 6px #285cb426}
+    .quick-seat.is-occupied .quick-seat-number{color:white}
+    .quick-hint{font-size:11px;color:#8a98aa;line-height:1.5;margin:10px 0 0}
+    .seat-overlay{display:none;position:fixed;inset:0;z-index:90;background:rgba(17,31,53,.22)}
+    .seat-overlay.open{display:block}
+    .seat-popover{position:fixed;z-index:91;width:288px;padding:15px;box-shadow:0 18px 54px rgba(16,30,56,.27)}
+    .pop-option{min-height:44px}
+    .facility-tools{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:#fff;border:1px solid #dae6f4;border-radius:14px;padding:12px 14px;margin-top:10px;box-shadow:var(--shadow)}
+    .facility-tools[hidden]{display:none}
+    .facility-tools strong{font-size:13px;color:#435d7b}
+    .facility-tool-buttons{display:flex;gap:6px;flex-wrap:wrap}
+    .action-card{display:flex;flex-wrap:wrap;gap:8px}
+    .action-card .btn{flex:1;min-width:100px}
+    @media(min-width:760px) and (max-width:1170px){
+      .content{grid-template-columns:minmax(0,1fr) 275px;gap:13px}
+      .sidebar{display:flex;flex-direction:column;gap:12px}
+      .tip-card,.action-card{grid-column:auto}
+      .page{padding:21px 18px}
+      .toolbar{padding:11px}
+      .toolbar .btn{min-height:40px}
+      .sidebar .list-card-body{max-height:280px}
+      .action-card .btn{min-width:105px}
+    }
+    @media(max-width:759px){
+      .app{--touch:48px}
+      .topbar{padding:13px 15px}
+      .page{padding:13px 12px 96px}
+      .headline{margin-bottom:15px}
+      .headline h1{font-size:20px}
+      .headline p{font-size:12px;line-height:1.45;max-width:205px}
+      .stat{min-width:65px;padding:8px}
+      .stat strong{font-size:19px}
+      .mobile-tabs{position:sticky;top:0;z-index:12;background:#f2f5fa;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;padding:4px 0 12px}
+      .mobile-tab{min-height:48px;border-radius:11px;border:1px solid #dce5f1;background:white;font-size:12px;font-weight:780;color:#738299;display:flex;justify-content:center;align-items:center;gap:5px;white-space:nowrap}
+      .mobile-tab.is-active{border-color:#2f72cf;background:#347ad8;color:white;box-shadow:0 4px 13px rgba(48,113,205,.16)}
+      .tab-count{font-size:10px;background:#edf4fd;color:#3975bd;padding:2px 5px;border-radius:12px}
+      .mobile-tab.is-active .tab-count{background:#ffffff30;color:white}
+      .content{display:block}
+      .mobile-quick-card{display:block;background:white;border:1px solid var(--line);border-radius:17px;padding:16px 14px;box-shadow:var(--shadow)}
+      .app[data-mobile-view="seats"] .left-col,.app[data-mobile-view="seats"] .sidebar{display:none}
+      .app[data-mobile-view="layout"] .mobile-quick-card,.app[data-mobile-view="layout"] .sidebar{display:none}
+      .app[data-mobile-view="customers"] .mobile-quick-card,.app[data-mobile-view="customers"] .left-col{display:none}
+      .app[data-mobile-view="layout"] .left-col{display:block}
+      .app[data-mobile-view="customers"] .sidebar{display:flex;flex-direction:column;gap:12px}
+      .toolbar{padding:12px;gap:9px}
+      .toolbar-group{gap:7px}
+      .number-field{min-height:46px;width:55px;font-size:17px}
+      .toolbar .btn{min-height:44px;font-size:12px;padding:9px 12px}
+      .toolbar .btn-icon{min-width:44px}
+      .zoom-control{width:100%;justify-content:flex-end;margin-left:0}
+      .zoom-readout{font-size:13px}
+      .board-scroll{padding:8px;max-height:calc(100svh - 320px);min-height:360px}
+      .board-caption strong{font-size:14px}
+      .board-caption small{display:block;font-size:11px;margin-top:5px}
+      .list-card-body{min-height:100px;max-height:none}
+      .customer-row{min-height:58px}
+      .list-card-head{padding:15px 14px}
+      .list-card-head strong{font-size:15px}
+      .card-foot .btn,.action-card .btn{min-height:46px;font-size:13px}
+      .tip-card{order:2}
+      .action-card{order:3}
+      .seat-popover{position:fixed!important;left:12px!important;right:12px!important;bottom:max(12px,env(safe-area-inset-bottom))!important;top:auto!important;width:auto;max-width:none;border-radius:19px;padding:19px 17px 23px}
+      .seat-overlay.open{background:rgba(15,27,49,.42)}
+      .pop-heading{font-size:17px;margin-bottom:12px}
+      .pop-option{min-height:56px;font-size:16px;padding:12px}
+      .pop-option .tag{font-size:12px}
+      .pop-input{min-height:52px}
+      .pop-input-row .btn{min-width:74px;min-height:52px}
+      .facility-tools{align-items:flex-start}
+      .facility-tools strong{width:100%}
+      .facility-tool-buttons{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:100%}
+      .facility-tool-buttons .btn{font-size:11px;min-height:46px;padding:7px 4px}
+      .modal-root{align-items:flex-end;padding:0}
+      .dialog{width:100%;max-width:none;border-radius:22px 22px 0 0;padding:24px 20px calc(24px + env(safe-area-inset-bottom))}
+      .dialog .modal-actions button{min-height:50px;font-size:15px}
+      .toast{bottom:86px;max-width:90vw;text-align:center}
+    }
+    @media(min-width:760px) and (max-width:850px){.board-scroll{max-height:650px}.topbar{padding:14px 20px}}
+    /* v3 iPhone/iPad: safe areas, touch control, keyboard ergonomics */
+    html{-webkit-text-size-adjust:100%}
+    body{-webkit-tap-highlight-color:transparent;overscroll-behavior-y:contain}
+    button{-webkit-appearance:none;appearance:none;touch-action:manipulation}
+    input{-webkit-appearance:none;appearance:none;border-radius:9px}
+    :where(button,input){-webkit-tap-highlight-color:transparent}
+    .topbar{padding-top:calc(19px + env(safe-area-inset-top,0px));padding-left:calc(30px + env(safe-area-inset-left,0px));padding-right:calc(30px + env(safe-area-inset-right,0px))}
+    .page{padding-bottom:calc(32px + env(safe-area-inset-bottom,0px))}
+    .modal-root{max-height:100dvh;overflow:auto;-webkit-overflow-scrolling:touch}
+    .seat-popover{max-height:min(80dvh,560px);overflow-y:auto;-webkit-overflow-scrolling:touch}
+    .install-banner{display:flex;align-items:flex-start;gap:13px;background:#edf5ff;border:1px solid #c4dafa;color:#365d88;padding:13px 14px;border-radius:13px;margin-bottom:14px;line-height:1.5;font-size:12px}
+    .install-banner b{display:block;color:#234d80;font-size:13px;margin-bottom:4px}
+    .install-banner .close-hint{margin-left:auto;min-height:34px;min-width:44px;border-radius:9px;border:1px solid #b6d1ef;background:#fff;color:#5278a5;font-weight:800;flex-shrink:0}
+    [hidden]{display:none!important}
+    @media(max-width:650px){.topbar{padding-top:calc(13px + env(safe-area-inset-top,0px));padding-left:calc(15px + env(safe-area-inset-left,0px));padding-right:calc(15px + env(safe-area-inset-right,0px))}}
+    @media(max-width:759px){
+      .page{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px));padding-left:calc(12px + env(safe-area-inset-left,0px));padding-right:calc(12px + env(safe-area-inset-right,0px))}
+      .mobile-tabs{top:0;padding-bottom:11px}
+      .mobile-tab{font-size:clamp(10px,2.95vw,12px);letter-spacing:-.15px}
+      .seat-popover{bottom:calc(12px + env(safe-area-inset-bottom,0px))!important;max-height:calc(100dvh - 36px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));}
+      .dialog{max-height:calc(100dvh - env(safe-area-inset-top,0px) - 10px);overflow:auto}
+      .toast{bottom:calc(86px + env(safe-area-inset-bottom,0px))}
+      .pop-input,.dialog input,.number-field{font-size:16px}
+      .install-banner{margin-top:2px}
+    }
+    @media(max-width:360px){.mobile-tabs{gap:4px}.mobile-tab{padding:0 3px}.tab-count{display:none}.quick-head{gap:7px}.quick-head h2{font-size:16px}.quick-head .btn{font-size:11px;padding:8px}}
+  </style>
+</head>
+<body>
+<div class="app">
+<header class="topbar"><div class="brand"><div class="logo" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M4 5.5h16V10H4zM4 14h7v6H4zM14 14h6v6h-6z" stroke="white" stroke-width="2" stroke-linejoin="round"/></svg></div><div><div class="brand-title">자리한눈 <span style="font-size:11px;color:#7991ae;font-weight:700">SEATFLOW</span></div><div class="brand-sub">은행 대기 고객 좌석 관리</div></div></div><div class="top-right"><div class="offline">오프라인 · 자동 저장</div><span class="clock" id="clock">--:--</span></div></header>
+<main class="page">
+ <aside class="install-banner" id="installBanner" hidden aria-label="아이폰 홈 화면 추가 안내"><div><b>아이폰·아이패드에서도 앱처럼 사용할 수 있어요</b><span>Safari에서 공유 버튼 → <strong>홈 화면에 추가</strong> → <strong>웹 앱으로 열기</strong>를 선택하세요. 처음 접속할 때 인터넷이 필요하고, 이후에는 오프라인으로도 열 수 있습니다.</span></div><button class="close-hint" type="button" id="hideInstallBanner" aria-label="설치 안내 닫기">닫기</button></aside>
+ <div class="headline"><div><h1>대기실 좌석 현황</h1><p>좌석을 눌러 대기번호를 등록하고, 시설물을 원하는 위치로 옮겨보세요.</p></div><div class="stats"><div class="stat"><strong id="statSeated">0</strong><span>착석</span></div><div class="stat"><strong id="statAway">0</strong><span>자리비움</span></div></div></div>
+ <nav class="mobile-tabs" id="mobileTabs" aria-label="모바일 화면 선택">
+  <button class="mobile-tab is-active" data-view="seats" aria-pressed="true"><span aria-hidden="true">▦</span> 좌석 관리</button>
+  <button class="mobile-tab" data-view="layout" aria-pressed="false"><span aria-hidden="true">▤</span> 배치도 편집</button>
+  <button class="mobile-tab" data-view="customers" aria-pressed="false"><span aria-hidden="true">☷</span> 고객 목록 <span class="tab-count" id="mobileCustomerBadge">0</span></button>
+ </nav>
+ <div class="content"><section class="mobile-quick-card" id="quickPanel" aria-label="빠른 좌석 관리">
+  <div class="quick-head"><div><h2>빠른 좌석 관리</h2><p>좌석을 터치해 번호를 등록하거나 완료 처리하세요.</p></div><button class="btn" id="quickAddAway">+ 자리비움</button></div>
+  <div class="quick-summary"><span><i class="dot"></i> 빈 좌석</span><span><i class="dot occupied"></i> 대기 중</span><span id="quickGridSize">4행 × 4열</span></div>
+  <div class="quick-grid-scroll"><div class="quick-grid" id="quickSeatGrid"></div></div>
+  <p class="quick-hint">※ 좌우로 밀어 다른 좌석을 볼 수 있어요. 테이블·안내데스크는 배치도 편집에서 설정하세요. 데이터는 <b>현재 기기에만 저장</b>되며 다른 기기로 옮기려면 백업을 이용하세요.</p>
+ </section><section class="left-col" id="layoutPanel"><div class="toolbar">
+  <span class="toolbar-title">좌석 배치</span><div class="toolbar-group"><input class="number-field" id="rowInput" type="number" min="1" max="12" value="4" aria-label="세로 줄 수"><span class="by">×</span><input class="number-field" id="colInput" type="number" min="1" max="12" value="4" aria-label="가로 칸 수"><button class="btn btn-primary" id="applyGrid">적용</button></div>
+  <span class="separator"></span><button class="btn" id="addRect"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/></svg>사각형 추가</button><button class="btn" id="addCircle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>원형 추가</button>
+  <div class="zoom-control"><button class="btn btn-icon" id="zoomMinus" title="축소">−</button><span class="zoom-readout" id="zoomLabel">100%</span><button class="btn btn-icon" id="zoomPlus" title="확대">＋</button><button class="btn" id="zoomFit" title="창 크기에 맞추기">맞춤</button></div>
+ </div><div class="board-shell"><div class="board-caption"><div><strong>대기실 배치도</strong> <small>시설물은 드래그로 이동 · 모서리로 크기 조절</small></div><div class="legend"><span class="legend-item"><i class="dot"></i>빈 좌석</span><span class="legend-item"><i class="dot occupied"></i>대기 중</span><span class="legend-item"><i class="dot away"></i>자리비움</span></div></div>
+ <div class="board-scroll" id="boardScroll"><div class="board-scale-outer" id="boardOuter"><div class="plan-board" id="planBoard"><div class="seat-zone" id="seatZone"></div><div id="facilityLayer"></div><div class="empty-note">대기실 평면 · 시설물 자유 배치</div></div></div></div>
+ </div><div class="facility-tools" id="facilityTools" hidden><strong id="selectedFacilityLabel">시설물 선택됨</strong><div class="facility-tool-buttons"><button class="btn" id="facilityRename">이름</button><button class="btn" id="facilityShrink" aria-label="선택 시설물 축소">− 축소</button><button class="btn" id="facilityGrow" aria-label="선택 시설물 확대">＋ 확대</button><button class="btn btn-warn" id="facilityDelete">삭제</button></div></div></section>
+ <aside class="sidebar" id="customersPanel"><section class="list-card"><div class="list-card-head"><strong><span style="color:#3e83da">●</span> 대기고객 현황</strong><small id="seatedCount">0명</small></div><div class="list-card-body" id="seatedList"></div></section>
+ <section class="list-card away"><div class="list-card-head"><strong><span style="color:#e4ab4f">●</span> 자리비움</strong><small id="awayCount">0명</small></div><div class="list-card-body" id="awayList"></div><div class="card-foot"><button class="btn wide-btn" id="addAway">+ 자리비움 번호 등록</button></div></section>
+ <div class="tip-card"><strong>사용 방법</strong><p>① <b>좌석 터치</b> → 대기번호 입력 / 자리비움 / 완료<br>② <b>도형 터치</b> → 이름 입력<br>③ <b>도형 이동</b> → 드래그 / 모서리 조절<br>④ <b>도형 길게 누르기</b> → 삭제</p></div><div class="action-card"><button class="btn" id="exportButton">데이터 백업·공유</button><button class="btn" id="importButton">백업 불러오기</button><button class="btn btn-warn" id="resetButton">전체 초기화</button></div>
+ </aside></div></main>
+</div>
+<input type="file" accept=".json,application/json" id="importFile" style="display:none" aria-label="백업 파일 선택"><div class="seat-overlay" id="seatOverlay"></div><div class="seat-popover" id="seatPopover" role="dialog" aria-label="좌석 작업 메뉴"></div>
+<div class="modal-root" id="modalRoot" role="dialog" aria-modal="true" aria-labelledby="dialogTitle"><div class="dialog"><div class="eyebrow" id="modalEyebrow">좌석 관리</div><h2 id="dialogTitle"></h2><p id="modalDescription"></p><div id="modalField"></div><div class="dialog-error" id="modalError"></div><div class="modal-actions" id="modalActions"></div></div></div><div class="toast" id="toast"></div>
+<script>
+(function(){'use strict';
+ const STORAGE_KEY='seatflow_offline_v1'; // reuse v1 keys to preserve existing device data
+ const BOARD_W=920, BOARD_H=670;
+ const $=id=>document.getElementById(id);
+ const defaultState=()=>({rows:4,cols:4,seats:{},away:[],facilities:[{id:'default-desk',type:'rect',x:210,y:85,w:485,h:72,label:'테이블'}]});
+ let data=load();let zoom=1;let menuSeatKey=null;let chosenFacility=null;let pointerState=null;let longPressTimer=null;let toastTimer=null;let usingCustomZoom=false;
+ function load(){try{const stored=localStorage.getItem(STORAGE_KEY);if(!stored)return defaultState();const d=JSON.parse(stored);if(!d||!Number.isInteger(d.rows)||!Number.isInteger(d.cols)||!d.seats||!Array.isArray(d.away)||!Array.isArray(d.facilities))return defaultState();d.rows=Math.max(1,Math.min(12,d.rows));d.cols=Math.max(1,Math.min(12,d.cols));return d;}catch(e){return defaultState();}}
+ let storageErrorShown=false;
+ function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}catch(e){
+  const badge=document.querySelector('.offline');
+  if(badge){badge.textContent='저장 불가 · 백업 필요';badge.style.color='#b04b52';badge.style.background='#fff0f0';}
+  if(!storageErrorShown){storageErrorShown=true;const hint=$('quickPanel')&&$('quickPanel').querySelector('.quick-hint');if(hint)hint.textContent='주의: 이 브라우저에서는 자동 저장을 사용할 수 없습니다. 중요한 내용은 즉시 백업하세요.';setTimeout(()=>toast('자동 저장이 차단되었습니다. 브라우저 설정을 확인하세요.'),500);}
+  console.warn('Storage unavailable',e);
+ }}
+ const sortNums=arr=>arr.sort((a,b)=>Number(a)-Number(b));
+ const seatedEntries=()=>Object.entries(data.seats).filter(([,num])=>num!==null && num!==undefined && String(num).trim()!=='').map(([key,num])=>({key,num:String(num)})).sort((a,b)=>Number(a.num)-Number(b.num));
+ const prettySeat=key=>{const [r,c]=key.split('-').map(Number);return `${r+1}행 ${c+1}열`;};
+ const seatKey=(r,c)=>`${r}-${c}`;
+ const isValidNumber=num=>/^\d{1,4}$/.test(num) && Number(num)>0;
+ function toast(message){$('toast').textContent=message;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),2300);}
+ function render(){renderSeats();renderLists();renderFacilities();$('rowInput').value=data.rows;$('colInput').value=data.cols;}
+ function renderSeats(){const zone=$('seatZone');zone.replaceChildren();zone.style.gridTemplateColumns=`repeat(${data.cols}, minmax(0, 1fr))`;zone.style.gridTemplateRows=`repeat(${data.rows}, minmax(0, 1fr))`;zone.style.gap=(data.cols>=9||data.rows>=9?'5px':data.cols>=7||data.rows>=7?'8px':'12px');const compact=data.cols>=7||data.rows>=7;const micro=data.cols>=10||data.rows>=10;const frag=document.createDocumentFragment();for(let r=0;r<data.rows;r++){for(let c=0;c<data.cols;c++){const k=seatKey(r,c),num=data.seats[k];const el=document.createElement('button');el.type='button';el.className='seat'+(num?' is-occupied':'')+(compact?' compact':'')+(micro?' micro':'');el.dataset.key=k;el.setAttribute('aria-label',`${prettySeat(k)} ${num?num+'번 고객':'빈 자리'}`);const mini=document.createElement('span');mini.className='seat-no';mini.textContent=`${r+1} - ${c+1}`;el.append(mini);if(num){const big=document.createElement('strong');big.className='customer-no';big.textContent=num;el.append(big);}else if(!compact){const sub=document.createElement('span');sub.style.fontSize='12px';sub.textContent='빈 좌석';el.append(sub);}el.addEventListener('click',e=>{e.stopPropagation();chosenFacility=null;renderFacilitySelection();openSeatPopover(k,el);});frag.append(el);}}zone.append(frag);renderQuickSeats();}
+ function renderQuickSeats(){
+  const grid=$('quickSeatGrid');grid.replaceChildren();
+  const minSeatWidth=72, gap=9;
+  grid.style.gridTemplateColumns=`repeat(${data.cols},minmax(${minSeatWidth}px,1fr))`;
+  grid.style.minWidth=Math.max(0,data.cols*minSeatWidth+(data.cols-1)*gap)+'px';
+  $('quickGridSize').textContent=`${data.rows}행 × ${data.cols}열`;
+  const frag=document.createDocumentFragment();
+  for(let r=0;r<data.rows;r++)for(let c=0;c<data.cols;c++){
+   const key=seatKey(r,c),num=data.seats[key];const seat=document.createElement('button');
+   seat.type='button';seat.className='quick-seat'+(num?' is-occupied':'');seat.dataset.key=key;
+   seat.setAttribute('aria-label',`${prettySeat(key)} ${num?num+'번 고객':'빈 좌석'}`);
+   const label=document.createElement('span');label.className='quick-seat-label';label.textContent=`${r+1}행 ${c+1}열`;
+   const number=document.createElement('span');number.className='quick-seat-number';number.textContent=num?`${num}번`:'＋';
+   seat.append(label,number);seat.addEventListener('click',()=>openSeatPopover(key,seat));frag.append(seat);
+  }grid.append(frag);
+ }
+ function setMobileView(view){
+  if(!['seats','layout','customers'].includes(view))return;
+  const app=document.querySelector('.app');app.dataset.mobileView=view;
+  for(const button of document.querySelectorAll('.mobile-tab')){
+   const selected=button.dataset.view===view;button.classList.toggle('is-active',selected);button.setAttribute('aria-pressed',String(selected));
+  }
+  closeSeatPopover();
+  if(view==='layout')requestAnimationFrame(()=>{if(window.innerWidth<760){zoom=.74;applyZoom();}else fitZoom();});
+ }
+ function renderLists(){const seated=seatedEntries();const away=sortNums(data.away.slice().map(String));$('statSeated').textContent=seated.length;$('statAway').textContent=away.length;$('seatedCount').textContent=seated.length+'명';$('awayCount').textContent=away.length+'명';$('mobileCustomerBadge').textContent=seated.length+away.length;
+  const seatedList=$('seatedList'),awayList=$('awayList');seatedList.replaceChildren();awayList.replaceChildren();if(!seated.length)seatedList.append(emptyList('✓','아직 등록된 대기 고객이 없습니다.'));for(const item of seated){const row=customerRow(item.num,prettySeat(item.key));row.addEventListener('click',()=>{if(window.innerWidth<760){setMobileView('seats');requestAnimationFrame(()=>{const el=Array.from(document.querySelectorAll('.quick-seat')).find(x=>x.dataset.key===item.key);if(el){el.scrollIntoView({behavior:'smooth',block:'nearest',inline:'nearest'});openSeatPopover(item.key,el);}});return;}const el=Array.from(document.querySelectorAll('.seat')).find(x=>x.dataset.key===item.key);if(el){el.classList.add('is-highlighted');setTimeout(()=>el.classList.remove('is-highlighted'),1200);openSeatPopover(item.key,el);$('boardScroll').scrollIntoView({behavior:'smooth',block:'nearest'});}});seatedList.append(row);}
+  if(!away.length)awayList.append(emptyList('↗','자리비움 고객이 없습니다.'));for(const num of away){const row=customerRow(num,'좌석 미지정 · 복귀 시 좌석에 등록');row.addEventListener('click',()=>openAwayDialog(num));awayList.append(row);}
+ }
+ function emptyList(symbol,message){const box=document.createElement('div');box.className='empty-list';const bubble=document.createElement('span');bubble.className='empty-symbol';bubble.textContent=symbol;const txt=document.createElement('span');txt.textContent=message;box.append(bubble,txt);return box;}
+ function customerRow(num,detail){const b=document.createElement('button');b.type='button';b.className='customer-row';const n=document.createElement('span');n.className='customer-badge';n.textContent=num+'번';const mid=document.createElement('span');mid.className='customer-meta';const title=document.createElement('b');title.textContent='대기번호 '+num;const desc=document.createElement('span');desc.textContent=detail;mid.append(title,desc);const arrow=document.createElement('span');arrow.className='row-chevron';arrow.textContent='›';b.append(n,mid,arrow);return b;}
+ function removeNumber(num){Object.keys(data.seats).forEach(k=>{if(String(data.seats[k])===num)delete data.seats[k];});data.away=data.away.filter(x=>String(x)!==num);}
+ function registerSeat(key,num,confirmed=false){num=String(Number(num));const previous=data.seats[key];if(previous && String(previous)!==num && !confirmed){closeSeatPopover();dialog({title:'기존 대기번호를 변경할까요?',desc:`이 좌석의 ${previous}번 고객이 대기목록에서 삭제되고 ${num}번 고객으로 교체됩니다.`,danger:true,confirm:'번호 교체',onConfirm:()=>registerSeat(key,num,true)});return;}removeNumber(num);data.seats[key]=num;closeSeatPopover();save();renderSeats();renderLists();toast(`${num}번 고객 · ${prettySeat(key)} 등록`);}
+ function markAway(key,num){num=String(Number(num));removeNumber(num);if(!data.away.includes(num))data.away.push(num);delete data.seats[key];closeSeatPopover();save();renderSeats();renderLists();toast(`${num}번 고객 · 자리비움 처리`);}
+ function completeCustomer(num){num=String(num);removeNumber(num);closeSeatPopover();save();renderSeats();renderLists();toast(`${num}번 고객 · 완료 처리`);}
+ function closeSeatPopover(){menuSeatKey=null;$('seatPopover').classList.remove('open');$('seatOverlay').classList.remove('open');$('seatPopover').replaceChildren();}
+ function openSeatPopover(key,el){menuSeatKey=key;const menu=$('seatPopover');menu.classList.add('open');$('seatOverlay').classList.add('open');const rect=el.getBoundingClientRect();if(window.innerWidth>=760){menu.style.left=Math.max(10,Math.min(window.innerWidth-300,rect.left))+'px';menu.style.top=Math.max(10,Math.min(window.innerHeight-260,rect.bottom+8))+'px';menu.style.bottom='auto';menu.style.right='auto';}else{menu.style.left='12px';menu.style.right='12px';menu.style.top='auto';menu.style.bottom='12px';}showSeatOptions(key);}
+ function option(label,right,handler,cls='',disabled=false){const b=document.createElement('button');b.className='pop-option '+cls;b.type='button';b.disabled=disabled;const l=document.createElement('span');l.textContent=label;const r=document.createElement('span');r.className='tag';r.textContent=right;b.append(l,r);b.addEventListener('click',e=>{e.stopPropagation();handler();});return b;}
+ function popTitle(key,suffix){const h=document.createElement('div');h.className='pop-heading';const a=document.createElement('span');a.textContent=prettySeat(key);const b=document.createElement('small');b.textContent=suffix;h.append(a,b);return h;}
+ function showSeatOptions(key){if(menuSeatKey!==key)return;const menu=$('seatPopover');menu.replaceChildren();const num=data.seats[key]||null;menu.append(popTitle(key,num?num+'번 고객':'빈 좌석'));menu.append(option('대기번호 입력',num?'번호 변경 가능':'번호 등록',()=>showSeatInput(key,'seat')));menu.append(option('자리비움',num?'현재 고객 이동':'번호 입력',()=>num?markAway(key,String(num)):showSeatInput(key,'away')));menu.append(option('완료',num?'대기 종료':'등록된 고객 없음',()=>{if(num)completeCustomer(String(num));},'complete',!num));}
+ function showSeatInput(key,mode){const menu=$('seatPopover');menu.replaceChildren();menu.append(popTitle(key,mode==='away'?'자리비움 등록':'대기번호 입력'));const form=document.createElement('form');const row=document.createElement('div');row.className='pop-input-row';const input=document.createElement('input');input.className='pop-input';input.inputMode='numeric';input.type='text';input.pattern='[0-9]*';input.autocomplete='off';input.placeholder='대기번호';input.value=mode==='seat'?(data.seats[key]||''):'';input.setAttribute('aria-label','대기번호');const submit=document.createElement('button');submit.className='btn btn-primary';submit.type='submit';submit.textContent='확인';row.append(input,submit);form.append(row);const error=document.createElement('div');error.className='dialog-error';form.append(error);form.addEventListener('submit',ev=>{ev.preventDefault();const value=String(input.value).trim();if(!isValidNumber(value)){error.textContent='1~9999 사이의 번호를 입력하세요.';return;}if(mode==='away')markAway(key,value);else registerSeat(key,value);});menu.append(form);const back=document.createElement('button');back.type='button';back.className='pop-back';back.textContent='‹ 이전으로';back.onclick=()=>showSeatOptions(key);menu.append(back);setTimeout(()=>input.focus({preventScroll:true}),0);}
+ function renderFacilitySelection(){for(const el of $('facilityLayer').children){el.classList.toggle('is-selected',el.dataset.id===chosenFacility);}const f=data.facilities.find(x=>x.id===chosenFacility);$('facilityTools').hidden=!f;if(f)$('selectedFacilityLabel').textContent='선택한 시설물 · '+f.label;}
+ function renderFacilities(){const layer=$('facilityLayer');layer.replaceChildren();for(const f of data.facilities){const el=document.createElement('div');el.className='facility '+(f.type==='circle'?'circle':'rect');el.style.left=f.x+'px';el.style.top=f.y+'px';el.style.width=f.w+'px';el.style.height=f.h+'px';el.dataset.id=f.id;el.tabIndex=0;el.setAttribute('role','button');el.setAttribute('aria-label',`${f.label||'이름 없음'} 시설물. 터치해서 이름 편집.`);const label=document.createElement('div');label.className='facility-label';label.textContent=f.label||'시설물';const handle=document.createElement('div');handle.className='resize-handle';handle.title='드래그하여 크기 변경';el.append(label,handle);el.addEventListener('pointerdown',e=>facilityPointerDown(e,f,el));el.addEventListener('pointermove',e=>facilityPointerMove(e,f,el));el.addEventListener('pointerup',e=>facilityPointerUp(e,f,el));el.addEventListener('pointercancel',()=>clearFacilityPointer());el.addEventListener('contextmenu',e=>{e.preventDefault();chosenFacility=f.id;renderFacilitySelection();deleteFacilityDialog(f.id);});el.addEventListener('keydown',e=>{if(e.key==='Enter')editFacilityDialog(f.id);if(e.key==='Delete')deleteFacilityDialog(f.id);});layer.append(el);}renderFacilitySelection();}
+ function clearFacilityPointer(){clearTimeout(longPressTimer);longPressTimer=null;pointerState=null;}
+ function facilityPointerDown(e,f,el){if(e.button!==0 && e.pointerType==='mouse')return;e.stopPropagation();closeSeatPopover();chosenFacility=f.id;renderFacilitySelection();const resizing=e.target.classList.contains('resize-handle');pointerState={id:f.id,px:e.clientX,py:e.clientY,x:f.x,y:f.y,w:f.w,h:f.h,mode:resizing?'resize':'move',moved:false,longPressed:false,pid:e.pointerId};try{el.setPointerCapture(e.pointerId);}catch(_e){}if(!resizing){clearTimeout(longPressTimer);longPressTimer=setTimeout(()=>{if(pointerState&&pointerState.id===f.id&&!pointerState.moved){pointerState.longPressed=true;deleteFacilityDialog(f.id);}},650);}}
+ function facilityPointerMove(e,f,el){if(!pointerState||pointerState.id!==f.id||pointerState.pid!==e.pointerId)return;const dx=(e.clientX-pointerState.px)/zoom,dy=(e.clientY-pointerState.py)/zoom;if(Math.abs(dx)+Math.abs(dy)>8){pointerState.moved=true;clearTimeout(longPressTimer);}if(!pointerState.moved||pointerState.longPressed)return;if(pointerState.mode==='resize'){f.w=Math.max(54,Math.min(BOARD_W-f.x,pointerState.w+dx));f.h=Math.max(48,Math.min(BOARD_H-f.y,pointerState.h+dy));el.style.width=f.w+'px';el.style.height=f.h+'px';}else{f.x=Math.max(0,Math.min(BOARD_W-f.w,pointerState.x+dx));f.y=Math.max(0,Math.min(BOARD_H-f.h,pointerState.y+dy));el.style.left=f.x+'px';el.style.top=f.y+'px';}}
+ function facilityPointerUp(e,f,el){if(!pointerState||pointerState.id!==f.id||pointerState.pid!==e.pointerId)return;const p=pointerState;clearFacilityPointer();if(p.longPressed)return;if(p.moved){f.x=Math.round(f.x);f.y=Math.round(f.y);f.w=Math.round(f.w);f.h=Math.round(f.h);save();}else if(p.mode!=='resize'){editFacilityDialog(f.id);}}
+ function addFacility(type){const n=data.facilities.length;const f={id:'f-'+Date.now()+'-'+Math.random().toString(36).slice(2,6),type,x:80+(n%5)*35,y:40+(n%5)*33,w:type==='circle'?100:180,h:type==='circle'?100:80,label:type==='circle'?'원형 시설물':'시설물'};data.facilities.push(f);save();renderFacilities();chosenFacility=f.id;renderFacilitySelection();toast('도형이 생성되었습니다. 눌러 이름을 입력하세요.');}
+ function dialog(config){const root=$('modalRoot');$('modalEyebrow').textContent=config.eyebrow||'좌석 관리';$('dialogTitle').textContent=config.title||'';$('modalDescription').textContent=config.desc||'';$('modalField').replaceChildren();$('modalError').textContent='';$('modalActions').replaceChildren();const close=()=>{root.classList.remove('open');root.onclick=null;document.onkeydown=null;};let input=null;if(config.input){const label=document.createElement('label');label.textContent=config.label||'입력';const box=document.createElement('input');input=box;box.value=config.value||'';box.placeholder=config.placeholder||'';box.type='text';if(config.input==='number'){box.pattern='[0-9]*';box.autocomplete='off';}box.maxLength=40;if(config.input==='number'){box.inputMode='numeric';box.min='1';box.max='9999';}if(config.label)label.setAttribute('for','modalInput');box.id='modalInput';$('modalField').append(label,box);box.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();doConfirm();}});}const actions=$('modalActions');const cancel=document.createElement('button');cancel.className='btn';cancel.textContent='취소';cancel.onclick=close;actions.append(cancel);const yes=document.createElement('button');yes.className='btn '+(config.danger?'btn-warn':'btn-primary');yes.textContent=config.confirm||'확인';const doConfirm=()=>{const val=input?input.value.trim():null;const error=config.validate?config.validate(val):null;if(error){$('modalError').textContent=error;return;}const result=config.onConfirm?config.onConfirm(val):true;if(result!==false)close();};yes.onclick=doConfirm;actions.append(yes);root.classList.add('open');root.onclick=e=>{if(e.target===root)close();};document.onkeydown=e=>{if(e.key==='Escape')close();};if(input)setTimeout(()=>{input.focus();if(config.input!=='number')input.select();},30);}
+ function editFacilityDialog(id){const f=data.facilities.find(x=>x.id===id);if(!f)return;dialog({eyebrow:'시설물 이름',title:'도형에 이름 입력',desc:'은행 대기실의 시설물 이름을 입력하세요. (예: 테이블, TV, 안내데스크)',input:'text',label:'시설물 이름',value:f.label,validate:x=>x?'': '이름을 입력해 주세요.',onConfirm:value=>{f.label=value;save();renderFacilities();toast('시설물 이름이 변경되었습니다.');}});}
+ function deleteFacilityDialog(id){const f=data.facilities.find(x=>x.id===id);if(!f)return;dialog({eyebrow:'시설물 삭제',title:'이 도형을 삭제할까요?',desc:`「${f.label}」 도형을 배치도에서 삭제합니다.`,danger:true,confirm:'삭제',onConfirm:()=>{data.facilities=data.facilities.filter(x=>x.id!==id);chosenFacility=null;save();renderFacilities();toast('시설물이 삭제되었습니다.');}});}
+ function openAwayDialog(num){dialog({eyebrow:'자리비움 고객 관리',title:num+'번 고객',desc:'고객이 돌아왔으면 원하는 좌석을 터치해 같은 번호를 입력하세요. 자리비움 목록에서 자동으로 사라집니다.',danger:true,confirm:'업무 완료',onConfirm:()=>{completeCustomer(num);}});}
+ function fitZoom(){const area=$('boardScroll');if(area.clientWidth<60)return;const available=Math.max(210,area.clientWidth-26);zoom=Math.max(.22,Math.min(1,available/BOARD_W));applyZoom();}
+ function initialZoom(){if(window.innerWidth<760){if(document.querySelector('.app').dataset.mobileView==='layout'){zoom=.74;applyZoom();}}else fitZoom();}
+ function applyZoom(){$('boardOuter').style.width=Math.round(BOARD_W*zoom)+'px';$('boardOuter').style.height=Math.round(BOARD_H*zoom)+'px';$('planBoard').style.transform=`scale(${zoom})`;$('zoomLabel').textContent=Math.round(zoom*100)+'%';closeSeatPopover();}
+ function changeZoom(delta){usingCustomZoom=true;zoom=Math.max(.25,Math.min(1.5,Math.round((zoom+delta)*100)/100));applyZoom();}
+ $('applyGrid').addEventListener('click',()=>{const rows=Number($('rowInput').value),cols=Number($('colInput').value);if(!Number.isInteger(rows)||!Number.isInteger(cols)||rows<1||cols<1||rows>12||cols>12){toast('가로·세로는 1~12 사이의 숫자로 입력하세요.');return;}const displaced=Object.keys(data.seats).some(k=>{const [r,c]=k.split('-').map(Number);return r>=rows||c>=cols;});const apply=()=>{for(const key of Object.keys(data.seats)){const [r,c]=key.split('-').map(Number);if(r>=rows||c>=cols)delete data.seats[key];}data.rows=rows;data.cols=cols;closeSeatPopover();save();render();toast(`${rows}행 × ${cols}열 배치가 적용되었습니다.`);};if(displaced)dialog({title:'좌석 수를 줄일까요?',desc:'배치 범위에서 벗어나는 좌석에 등록된 고객 번호는 삭제됩니다.',confirm:'변경',danger:true,onConfirm:apply});else apply();});
+ document.querySelectorAll('.mobile-tab').forEach(button=>button.addEventListener('click',()=>setMobileView(button.dataset.view)));
+ $('seatOverlay').addEventListener('click',closeSeatPopover);
+ $('quickAddAway').addEventListener('click',()=>$('addAway').click());
+ $('facilityRename').onclick=()=>{if(chosenFacility)editFacilityDialog(chosenFacility);};
+ $('facilityDelete').onclick=()=>{if(chosenFacility)deleteFacilityDialog(chosenFacility);};
+ function resizeSelectedFacility(direction){const f=data.facilities.find(x=>x.id===chosenFacility);if(!f)return;const factor=direction>0?1.15:0.85;f.w=Math.max(54,Math.min(BOARD_W-f.x,Math.round(f.w*factor)));f.h=Math.max(48,Math.min(BOARD_H-f.y,Math.round(f.h*factor)));save();renderFacilities();}
+ $('facilityGrow').onclick=()=>resizeSelectedFacility(1);$('facilityShrink').onclick=()=>resizeSelectedFacility(-1);
+ $('addRect').onclick=()=>addFacility('rect');$('addCircle').onclick=()=>addFacility('circle');$('zoomPlus').onclick=()=>changeZoom(.1);$('zoomMinus').onclick=()=>changeZoom(-.1);$('zoomFit').onclick=()=>{usingCustomZoom=true;fitZoom();};
+ $('addAway').onclick=()=>dialog({eyebrow:'자리비움 등록',title:'고객 대기번호 입력',desc:'현재 자리에 없는 고객의 대기번호를 따로 기록합니다.',input:'number',label:'대기번호',placeholder:'예: 37',validate:v=>isValidNumber(v)?'':'1~9999 사이의 번호를 입력하세요.',onConfirm:v=>{const num=String(Number(v));removeNumber(num);data.away.push(num);save();render();toast(num+'번 고객 · 자리비움 등록');}});
+ $('resetButton').onclick=()=>dialog({eyebrow:'모든 정보 초기화',title:'전체 데이터를 초기화할까요?',desc:'대기번호, 자리비움 목록, 좌석 배치와 시설물이 처음 상태로 돌아갑니다. 이 작업은 되돌릴 수 없습니다.',danger:true,confirm:'전체 초기화',onConfirm:()=>{data=defaultState();chosenFacility=null;save();render();toast('모든 데이터가 초기화되었습니다.');}});
+ function importBackupText(text){
+  let incoming;try{const parsed=JSON.parse(text);incoming=parsed.data||parsed;}catch(e){toast('올바른 JSON 파일이 아닙니다.');return;}
+  if(!incoming||!Number.isInteger(incoming.rows)||!Number.isInteger(incoming.cols)||incoming.rows<1||incoming.rows>12||incoming.cols<1||incoming.cols>12||!incoming.seats||typeof incoming.seats!=='object'||Array.isArray(incoming.seats)||!Array.isArray(incoming.away)||!Array.isArray(incoming.facilities)){toast('자리한눈 백업 파일이 아닙니다.');return;}
+  const clean={rows:incoming.rows,cols:incoming.cols,seats:{},away:[],facilities:[]},used=new Set();
+  for(const [key,value] of Object.entries(incoming.seats)){
+    if(!/^\d+-\d+$/.test(key))continue;const [r,c]=key.split('-').map(Number);const num=String(value);
+    if(r>=clean.rows||c>=clean.cols||!isValidNumber(num)||used.has(String(Number(num))))continue;
+    const normal=String(Number(num));clean.seats[key]=normal;used.add(normal);
+  }
+  for(const value of incoming.away){const num=String(value);if(!isValidNumber(num)||used.has(String(Number(num))))continue;const normal=String(Number(num));clean.away.push(normal);used.add(normal);}
+  for(const obj of incoming.facilities.slice(0,80)){
+    if(!obj||!['rect','circle'].includes(obj.type))continue;
+    const numeric=['x','y','w','h'].every(k=>typeof obj[k]==='number'&&Number.isFinite(obj[k]));if(!numeric)continue;
+    const x=Math.max(0,Math.min(BOARD_W-54,obj.x));const y=Math.max(0,Math.min(BOARD_H-48,obj.y));
+    clean.facilities.push({id:'import-'+clean.facilities.length,type:obj.type,x,y,w:Math.max(54,Math.min(BOARD_W-x,obj.w)),h:Math.max(48,Math.min(BOARD_H-y,obj.h)),label:String(obj.label||'시설물').slice(0,40)});
+  }
+  dialog({eyebrow:'백업 불러오기',title:'저장된 데이터를 교체할까요?',desc:'현재 기기에 저장된 좌석·시설물 데이터가 선택한 백업 내용으로 바뀝니다. 이전 데이터는 먼저 백업해 두세요.',danger:true,confirm:'불러오기',onConfirm:()=>{data=clean;chosenFacility=null;closeSeatPopover();save();render();toast('백업 데이터를 불러왔습니다.');}});
+ }
+ window.seatflowImportJson=importBackupText;
+ $('importButton').onclick=()=>{if(window.SeatflowAndroid&&typeof window.SeatflowAndroid.openBackup==='function'){window.SeatflowAndroid.openBackup();}else $('importFile').click();};
+ $('importFile').addEventListener('change',async e=>{const file=e.target.files&&e.target.files[0];if(!file)return;if(file.size>1024*1024){toast('1MB 이하의 백업 파일만 사용할 수 있습니다.');e.target.value='';return;}try{let contents;if(typeof file.text==='function')contents=await file.text();else contents=await new Promise((res,rej)=>{const reader=new FileReader();reader.onload=()=>res(reader.result);reader.onerror=rej;reader.readAsText(file);});importBackupText(contents);}catch(_e){toast('백업 파일을 읽지 못했습니다.');}e.target.value='';});
+ function backupDownload(blob,filename){
+  const url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),60000);
+  toast('JSON 백업 파일을 저장합니다.');
+ }
+ $('exportButton').onclick=async()=>{
+  const backupText=JSON.stringify({exportedAt:new Date().toISOString(),app:'자리한눈',data},null,2);
+  if(window.SeatflowAndroid&&typeof window.SeatflowAndroid.saveBackup==='function'){
+   window.SeatflowAndroid.saveBackup(backupText);return;
+  }
+  const blob=new Blob([backupText],{type:'application/json'});
+  const filename='seatflow-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  // iOS Safari: share to Files/AirDrop when supported; otherwise regular download.
+  if(typeof File==='function'&&navigator.share&&navigator.canShare){
+   const file=new File([blob],filename,{type:'application/json'});
+   try{
+    if(navigator.canShare({files:[file]})){
+     await navigator.share({files:[file],title:'자리한눈 백업'});
+     toast('백업 공유를 완료했습니다.');return;
+    }
+   }catch(err){
+    if(err&&err.name==='AbortError')return;
+    // Some iOS versions cannot share JSON files; fall back to download.
+   }
+  }
+  backupDownload(blob,filename);
+ };
+ $('planBoard').addEventListener('click',e=>{if(e.target===$('planBoard')||e.target.classList.contains('empty-note')){closeSeatPopover();chosenFacility=null;renderFacilitySelection();}});
+ $('boardScroll').addEventListener('scroll',()=>{if(menuSeatKey)closeSeatPopover();});
+ function updateClock(){const now=new Date();$('clock').textContent=now.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',hour12:false});}updateClock();setInterval(updateClock,30000);
+ // Keep auto-save warning visible if private browsing or storage restrictions block writes.
+ const onAppleMobile=()=>/iPhone|iPad|iPod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+ const installed=(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
+ let hasHiddenInstallTip=false;try{hasHiddenInstallTip=sessionStorage.getItem('seatflowHideInstallBanner')==='yes';}catch(_e){}
+ if(onAppleMobile()&&!installed&&location.protocol==='https:'&&!hasHiddenInstallTip)$('installBanner').hidden=false;
+ $('hideInstallBanner').addEventListener('click',()=>{ $('installBanner').hidden=true;try{sessionStorage.setItem('seatflowHideInstallBanner','yes');}catch(_e){} });
+ if('serviceWorker' in navigator&&['https:','http:'].includes(location.protocol)){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+ }
+ document.querySelector('.app').dataset.mobileView='seats';save();render();requestAnimationFrame(initialZoom);let lastWindowWidth=window.innerWidth;window.addEventListener('resize',()=>{const widthChanged=Math.abs(window.innerWidth-lastWindowWidth)>35;lastWindowWidth=window.innerWidth;if(widthChanged){usingCustomZoom=false;initialZoom();}else if(!usingCustomZoom&&window.innerWidth>=760)initialZoom();});
+})();
+</script>
+</body>
+</html>
